@@ -1,53 +1,45 @@
-tiny-js
+Exploiting tiny-js
 =======
 
-(originally [on Google Code](https://code.google.com/p/tiny-js/))
+[Original Project](https://code.google.com/p/tiny-js/)
 
-This project aims to be an extremely simple (~2000 line) JavaScript interpreter, meant for 
-inclusion in applications that require a simple, familiar script language that can be included
-with no dependencies other than normal C++ libraries. It currently consists of two source files:
-one containing the interpreter, another containing built-in functions such as String.substring.
+This is mainly going to be an attempt at hopefully finding and exploiting a bug in tiny-js
 
-TinyJS is not designed to be fast or full-featured. However it is great for scripting simple 
-behaviour, or loading & saving settings.
+My Description of Tinyjs
+---
+Tinyjs is an implementation of js that is done in a single file (~2000 lines).<br />
+It is intended to be used as a library, and in fact the REPL is [Script.cpp](https://github.com/sS3lla/tiny-js/blob/master/Script.cpp),
+which is done via evalulating each expression.
 
-I make absolutely no guarantees that this is compliant to JavaScript/EcmaScript standard. 
-In fact I am sure it isn't. However I welcome suggestions for changes that will bring it 
-closer to compliance without overly complicating the code, or useful test cases to add to 
-the test suite.
-
-Currently TinyJS supports:
-
-* Variables, Arrays, Structures
-* JSON parsing and output
-* Functions
-* Calling C/C++ code from JavaScript
-* Objects with Inheritance (not fully implemented)
-
-Please see [CodeExamples](https://github.com/gfwilliams/tiny-js/blob/wiki/CodeExamples.md) for examples of code that works...
-
-For a list of known issues, please see the comments at the top of the TinyJS.cpp file, as well as the [GitHub issues](https://github.com/gfwilliams/tiny-js/issues)
-
-There is also the [42tiny-js branch](https://github.com/gfwilliams/tiny-js/tree/42tiny-js) - this is maintained by Armin and provides a more full-featured JavaScript implementation than GitHub master.
-
-TinyJS is released under an MIT licence.
 
 Internal Structure
 ------------------------
 
-TinyJS uses a Recursive Descent Parser, so there is no 'Parser Generator' required. It does not
-compile to an intermediate code, and instead executes directly from source code. This makes it 
-quite fast for code that is executed infrequently, and slow for loops.
+TinyJS uses a Recursive Descent Parser (RDP) to generate tokens. <br/>
+An extremly basic description of RDP is that it advances a cursor and does a big if statement.
 
-Variables, Arrays and Objects are stored in a simple linked list tree structure (42tiny-js uses a C++ Map).
-This is simple, but relatively slow for large structures or arrays.
+The RDP generates tokens, which are then directly executed from, rather than a vm.<br/>
+The execution of the tokens is done via (Need to check this out)
 
-JavaScript for Microcontrollers
+Variables, Arrays and Objects are stored in a simple linked list tree structure. (Need to check this out)
+
+Project Structure
+------------------------
+[Script.cpp](https://github.com/sS3lla/tiny-js/blob/master/Script.cpp)
+-> REPL<br/>
+[TinyJS.cpp](https://github.com/sS3lla/tiny-js/blob/master/TinyJS.cpp)
+-> Main JS script <br/>
+[TinyJS_Functions.cpp](https://github.com/sS3lla/tiny-js/blob/master/TinyJS_Functions.cpp)
+-> Native General Functions<br/>
+[TinyJS_MathFunctions.cpp](https://github.com/sS3lla/tiny-js/blob/master/TinyJS_MathFunctions.cpp)
+-> Specific Math Functions (Not added by default)<br/>
+[run_tests.cpp](https://github.com/sS3lla/tiny-js/blob/master/run_tests.cpp)
+-> Evaluates a whole file and checks if ```result = 1``` which is set by the script and counts that as a pass
+
+
+Existing/reported bugs
 --------------------------------
-
-If you're after JavaScript for Microcontrollers, take a look at the
-[Espruino JavaScript Interpreter](http://www.espruino.com ) - it is a complete re-write of TinyJS
-targeted at processors with extremely low RAM (8kb or more). It is currently available for a range
-of STM32 ARM Microcontrollers, including [two boards that have it pre-installed](http://www.espruino.com/Order).
+I am currently looking at this [issue](https://github.com/gfwilliams/tiny-js/issues/31), which I have minifed down to ```x = a?b = 1 ? 1 : anything_can_be_here```<br/>
+I still however don't know how it gets triggered
 
 
